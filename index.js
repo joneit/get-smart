@@ -79,6 +79,10 @@ Object.assign(getSmart, {
     regexMatchActualFilename: /(.*);.*/,
     regexForcedExtOrActualExt: /((;\.?(\w+))|(\.(\w+)))$/i,
     forcedExtMatchIndex: 3,
-    actualExtMatchIndex: 5
+    actualExtMatchIndex: 5,
+
+    version: '1.0.2'
 
 });
+
+module.exports = getSmart;

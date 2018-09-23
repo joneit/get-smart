@@ -9,10 +9,10 @@ This function performs a basic asynchronous [**AJAX**](https://en.wikipedia.org/
 var getSmart = require('get-smart');
 ```
 
-As an alternative to using the npm module, the author maintains versioned CDN files that sets the global `getSmart`. The client would request one of the following (where `1.0.1` is the requested version):
+As an alternative to using the npm module, the author maintains versioned CDN files that sets the global `getSmart`. The client would request one of the following (where `1.0.2` is the requested version):
 ```html
-<script src="https://joneit.github.io/get-smart/1.0.1/build/get-smart.js"></script>
-<script src="https://joneit.github.io/get-smart/1.0.1/build/get-smart.min.js"></script>
+<script src="https://joneit.github.io/get-smart/1.0.2/build/get-smart.js"></script>
+<script src="https://joneit.github.io/get-smart/1.0.2/build/get-smart.min.js"></script>
 ```
 
 ## Usage
@@ -73,7 +73,5 @@ window.onload = getSmart.bind(null, urlOrUrlHash, function(results) {
 The only reason `require` is not supported in general, and in `.js` modules in particular, is that synchronous `XMLHttpRequest` has been deprecated (except in Web Workers). Maybe later!
 
 ## Version History
-* `1.0.1` (9/22/2018)
-   * Correct source code this time (!)
-* `1.0.0` (9/22/2018)
+* `1.0.2` (9/22/2018)
    * Initial release
