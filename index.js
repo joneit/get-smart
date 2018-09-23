@@ -1,14 +1,14 @@
 'use strict';
 
-function getMod(urlStrOrHash, callback) {
+function getSmart(urlStrOrHash, callback) {
     if (typeof urlStrOrHash === 'object') {
-        getMod.all(urlStrOrHash, callback)
+        getSmart.all(urlStrOrHash, callback)
     } else {
-        getMod.ajax(urlStrOrHash, callback);
+        getSmart.ajax(urlStrOrHash, callback);
     }
 }
 
-Object.assign(getMod, {
+Object.assign(getSmart, {
 
     ajax: function(url, callback) {
         var httpRequest = new XMLHttpRequest();
@@ -29,8 +29,9 @@ Object.assign(getMod, {
                             var el = document.createElement('style');
                             el.innerText = data;
                             data = el;
+                            break;
                         case '.snippets':
-                            data = data.split(getMod.snip);
+                            data = data.split(getSmart.snip);
                             break;
                         case '.js':
                             try {
@@ -58,7 +59,7 @@ Object.assign(getMod, {
         var countdown = keys.length;
         var map = {};
         keys.forEach(function (key) {
-            getMod.ajax(urlHash[key], function(data) {
+            getSmart.ajax(urlHash[key], function(data) {
                 map[key] = data;
                 if (!--countdown) {
                     finish(map);
@@ -71,4 +72,4 @@ Object.assign(getMod, {
 
 });
 
-module.exports = getMod;
+module.exports = getSmart;

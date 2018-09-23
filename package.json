@@ -1,0 +1,20 @@
+{
+  "name": "get-smart",
+  "version": "1.0.0",
+  "description": "AJAX function to smartly GET .js modules, .json objects, .css stylesheets, and .snippets array; else raw text",
+  "main": "index.js",
+  "scripts": {
+    "build": "sh build.sh",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joneit/get-smart.git"
+  },
+  "author": "Jonathan Eiten",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joneit/get-smart/issues"
+  },
+  "homepage": "https://github.com/joneit/get-smart#readme"
+}
