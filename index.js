@@ -11,29 +11,35 @@ function getSmart(urlStrOrHash, callback) {
 Object.assign(getSmart, {
 
     ajax: function(url, callback) {
-        var httpRequest = new XMLHttpRequest();
-        httpRequest.open('GET', url, true);
+        var httpRequest = new XMLHttpRequest(),
+            filename = url.replace(getSmart.regexMatchActualFilename, '$1');
+
+        httpRequest.open('GET', filename, true);
+
         httpRequest.onreadystatechange = function() {
             if (
                 httpRequest.readyState === 4 && // HTTP_STATE_DONE
                 httpRequest.status === 200 // HTTP_STATUS_OK
             ) {
                 var data = httpRequest.responseText,
-                    match = url.match(/\.\w+$/);
+                    match = url.match(getSmart.regexForcedExtOrActualExt),
+                    forcedExt = match && match[getSmart.forcedExtMatchIndex],
+                    actualExt = match && match[getSmart.actualExtMatchIndex];
+
                 try {
-                    switch (match && match[0]) {
-                        case '.json':
+                    switch ((forcedExt || actualExt || '').toLowerCase()) {
+                        case 'json':
                             data = JSON.parse(data);
                             break;
-                        case '.css':
+                        case 'css':
                             var el = document.createElement('style');
                             el.innerText = data;
                             data = el;
                             break;
-                        case '.snippets':
+                        case 'snippets':
                             data = data.split(getSmart.snip);
                             break;
-                        case '.js':
+                        case 'js':
                             try {
                                 var exports = {},
                                     module = {exports: exports},
@@ -68,8 +74,11 @@ Object.assign(getSmart, {
         });
     },
 
-    snip: '\n// --- snip ---\n'
+    snip: '\n// --- snip ---\n',
+
+    regexMatchActualFilename: /(.*);.*/,
+    regexForcedExtOrActualExt: /((;\.?(\w+))|(\.(\w+)))$/i,
+    forcedExtMatchIndex: 3,
+    actualExtMatchIndex: 5
 
 });
-
-module.exports = getSmart;
