@@ -79,7 +79,7 @@ getSmart.regexForcedExtOrActualExt = /((;\.?(\w+))|(\.(\w+)))$/i;
 getSmart.forcedExtMatchIndex = 3;
 getSmart.actualExtMatchIndex = 5;
 
-getSmart.version = '1.0.3';
+getSmart.version = '1.0.4';
 
 
 module.exports = getSmart;
