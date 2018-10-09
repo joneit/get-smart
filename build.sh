@@ -1,13 +1,20 @@
-NAME=getSmart
+# package.json: get value of "name" and "version" properties:
+MODULE_NAME=$(cat package.json | sed -En 's/.*"name": "(.*)".*/\1/p')
+VERSION=$(cat package.json | sed -En 's/.*"([0-9]+\.[0-9]+\.[0-9]+)".*/\1/p')
 
-MODNAM=$(cat package.json | sed -En 's/.*"name": "(.*)".*/\1/p')
+# index.js: update the `version` property in the code:
+sed -i '' -E 's/[0-9]+\.[0-9]+\.[0-9]+/'${VERSION}'/' index.js
 
-mkdir build 2>/dev/null
+# make `umd` subdirectory and ignore error if already extant
+mkdir umd 2>/dev/null
 
-echo '(function(){' > build/$MODNAM.js
-sed 's/module.exports =/window.'$NAME' =/' index.js >> build/$MODNAM.js
-echo '})();' >> build/$MODNAM.js
+# wrap index.js into umd/module-name.js:
+echo '(function(){' > umd/$MODULE_NAME.js
+sed -E 's/module.exports = ([A-Za-z_$]+)/window.\1 = \1/' index.js >> umd/$MODULE_NAME.js
+echo '})();' >> umd/$MODULE_NAME.js
 
-uglifyjs build/$MODNAM.js -cmo build/$MODNAM.min.js
+# minifiy wrapped version into umd/module-name.min.js:
+uglifyjs umd/$MODULE_NAME.js -cmo umd/$MODULE_NAME.min.js
 
-ls -lahL build
+# list `umd` subdirectory to console as confirmation:
+ls -lahL umd

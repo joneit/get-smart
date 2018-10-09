@@ -9,11 +9,12 @@ This function performs a basic asynchronous [**AJAX**](https://en.wikipedia.org/
 var getSmart = require('get-smart');
 ```
 
-As an alternative to using the npm module, the author maintains versioned CDN files that sets the global `getSmart`. The client would request one of the following (where `1.0.2` is the requested version):
+As an alternative to using the npm module, the client may request a versioned build file that sets the global `window.getSmart`:
 ```html
-<script src="https://joneit.github.io/get-smart/1.0.2/build/get-smart.js"></script>
-<script src="https://joneit.github.io/get-smart/1.0.2/build/get-smart.min.js"></script>
+<script src="https://unpkg.com/get-smart@1.0/umd/get-smart.js"></script>
+<script src="https://unpkg.com/get-smart@1.0/umd/get-smart.min.js"></script>
 ```
+Any [SEMVER](//semver.org) string can be used. `1.0` in the above means load the latest of the 1.0.* range. See the [npm semver calculator](//semver.npmjs.com) and npm’s [semantic versioning](https://docs.npmjs.com/misc/semver) page.
 
 ## Usage
 
@@ -73,5 +74,8 @@ window.onload = getSmart.bind(null, urlOrUrlHash, function(results) {
 The only reason `require` is not supported in general, and in `.js` modules in particular, is that synchronous `XMLHttpRequest` has been deprecated (except in Web Workers). Maybe later!
 
 ## Version History
+* `1.0.3` (10/9/2018)
+   * Avoid using `Object.assign` for IE-11 compatibility
+   * Update build.sh to create `umd` folder for `unpkg.com` CDN support for this and all future versions. See revised installation snippet above. (`get-smart.github.io` will no longer be updated with new versions, although version `1.0.2` will remain there.)
 * `1.0.2` (9/22/2018)
    * Initial release
