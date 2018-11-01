@@ -4,13 +4,20 @@
   <meta charset="UTF-8">
   <title>Title</title>
   <script src="../umd/get-smart.js"></script>
-  <script>
-    getSmart('.', function(f){
-        f();
-    })
-  </script>
+  <script src="index.js"></script>
+  <link rel="stylesheet" href="index.css">
 </head>
 <body>
-This tests the async <code>require</code> by having index.js require submodule.js.
+Test async <code>require</code> by fetching module.js which requires submodule.js.
+
+<table>
+  <tr><th>Expected Output</th><th>Direct Call</th><th>instance.fetch</th></tr>
+<tr><td>
+  parse: submodule<br>
+  return: 88<br>
+  parse: module<br>
+  return: 99<br>
+</td><td></td><td></td></tr>
+</table>
 </body>
 </html>

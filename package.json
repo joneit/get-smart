@@ -1,6 +1,6 @@
 {
   "name": "get-smart",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "AJAX function to smartly GET .js modules, .json objects, .css stylesheets, and .snippets array; else raw text",
   "main": "index.js",
   "scripts": {

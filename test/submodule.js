@@ -1,2 +1,2 @@
-console.log('submodule!');
-module.exports = 99;
+module.log('parse: submodule');
+module.exports = 88;
