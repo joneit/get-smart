@@ -66,7 +66,7 @@ getSmart({
 });
 ```
 
-## Requring a file (or files) on page load
+## Requiring a file (or files) on page load
 ```js
 window.onload = getSmart.bind(null, urlOrUrlHash, function(results) {
    // page logic goes here and typically references results
@@ -144,22 +144,4 @@ Note that `getSmart.fetch` merely redirects the method overloads:
 As an alternative to calling `fetch`, these functions may be called directly.
 
 ## Version History
-* `2.0.0` (10/31/2018)
-  * Add a new third parameter to get-smart function (and `.fetch`, `.ajax`, `.all`, and `js` reviver function) to serve as a prototype for `module` in `.js` files, providing access to selected variables
-  * Expose `getSmart.require` which is the function called by calls to `require()` made from submodules
-  * Make the `getSmart` function constructible, extract `getSmart.fetch`, and add references to all existing props to `getSmart.prototype`
-  * Throw error for modules that call `require()` but don’t appear to assign to `module.exports` as required
-  * Throw error for modules that call `require()` and assign to `module.exports` more than once
-  * Allow (but ignore) substring between ; and . in url
-  * Bumping to new major version `2.0.0` in recognition of breaking change that a file name without an extension now gets the default extension (`.js`). A file without an extension can still be loaded by specifiying the null extension (`.`) explicitly.
-* `1.1.0` (10/30/2018)
-  * `.js` is now the default extension for filenames with no extension
-  * `index.js` is now the default filename when no filename is given in the URL (if path ends in `.`, `..`, or `/`)
-  * An asynchronous implementation of `require` is now available for use inside `.js` modules
-  * Expose `getSmart.revivers`, a dictionary of file processors which the application developer can augment or override
-* `1.0.4` (10/9/2018)
-  * Update build.sh to create `umd` folder for `unpkg.com` CDN support for this and all future versions. See revised installation snippet above. (`get-smart.github.io` will no longer be updated with new versions, although version `1.0.2` will remain there.)
-* `1.0.3` (10/9/2018)
-   * Avoid using `Object.assign` for IE-11 compatibility
-* `1.0.2` (9/22/2018)
-   * Initial release
+See [releases](https://github.com/joneit/get-smart/releases).

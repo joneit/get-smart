@@ -51,7 +51,7 @@ var revivers = {
                     throw new Error('Modules calling require() must have a module.exports assignment');
                 }
                 nestedCallback = true;
-                context.require.apply(context, arguments);
+                return context.require.apply(context, arguments);
             };
 
         closure(module, exports, require);
@@ -64,15 +64,15 @@ var revivers = {
 
 var descriptors = {
     // non-overrideable members
-    fetch: { enumerable: true, configurable: false, value: fetch },
-    ajax: { enumerable: true, configurable: false, value: ajax },
-    all: { enumerable: true, configurable: false, value: all },
-    version: { enumerable: true, configurable: false, value: '2.0.0' },
+    fetch: { enumerable: true, writable: false, value: fetch },
+    ajax: { enumerable: true, writable: false, value: ajax },
+    all: { enumerable: true, writable: false, value: all },
+    version: { enumerable: true, writable: false, value: '2.0.1' },
 
     // overrideable members
-    require: { enumerable: true, configurable: true, value: fetch },
-    revivers: { enumerable: true, configurable: true, value: revivers },
-    snip: { enumerable: true, configurable: true, value: '\n// --- snip ---\n' }
+    require: { enumerable: true, writable: true, value: fetch },
+    revivers: { enumerable: true, writable: true, value: revivers },
+    snip: { enumerable: true, writable: true, value: '\n// --- snip ---\n' }
 };
 
 Object.defineProperties(getSmart, descriptors);
