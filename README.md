@@ -18,47 +18,45 @@ Any [SEMVER](//semver.org) string can be used. `2.0` in the above means load the
 
 ## Usage
 
+There are two overloads to the `getSmart` function (shown in TypeScript-like pseudo-code):
+* String URL overload: `getSmart(url: string, callback: function, prototype: object)`
+* URL hash overload: `getSmart(urls: object, callback: function, prototype: object)`
+
 ### String URL
+
+Calling signature: `getSmart(url: string, callback: function, modulePrototype: object = Object)`
+
+This overload gets a single file, "revived" per file extension:
+
 ```js
 var myApi; // receives the value of `module.exports` set in my-api.js
 getSmart('my-api.js', function(api) { myApi = api; }, modulePrototype);
 
 var myStyleEl; // receives a <style> element with innerHTML set to contents of my-stylesheet.css
-getSmart('my-stylesheet.css', function(styleEl) { myStyleEl = styleEl; }, modulePrototype);
+getSmart('my-stylesheet.css', function(styleEl) { myStyleEl = styleEl; });
 
 var myObject; // receives an object (or array) JSON.parse'd from the contents of my-data.json
-getSmart('my-data.json', function(json) { myObject = json; }, modulePrototype);
+getSmart('my-data.json', function(json) { myObject = json; });
 
 var mySnippets; // receives array of string from my-notes.snippets split by getSmart.snip ("\n// ---snip---\n")
-getSmart('my-notes.snippets', function(array) { mySnippets = array; }, modulePrototype);
+getSmart('my-notes.snippets', function(array) { mySnippets = array; });
 
 var myText; // receives contents of my-story.txt entirely as raw text (any other extension or null extension)
-getSmart('my-story.txt', function(text) { myText = text; }, modulePrototype);
+getSmart('my-story.txt', function(text) { myText = text; });
 ```
-
-In the case of JavaScript files, each file is fetched, closed over, and executed.
-The closure has access to locals `exports`, `module`, and `require`.
-(This `require` is _asynchronous._ See [note below](#a-note-about-require).)
-
-The third parameter, `modulePrototype` is optional. If provided, `module` will be created with it as its prototype. This gives the module access to selected globals. In any case, the `module.exports` property is always a defined.
-
-### Parser override
-To override the type interpretation, include `;` + optional `.` + an alternate extension at end of URL. The following example forces a `.js` file to be read as if it had been a `.snippets` file:
-```js
-var mySnippets; // receives array of string from my-notes.js split by getSmart.snip ("\n// ---snip---\n")
-getSmart('my-notes.js;snippets', function(array) { mySnippets = array; });
-```
-An optional substring may be given between `;` and `.`. For example, `'my-notes.js;substring.snippets'`. This string is ignored by get-smart but may be of use to applications.
 
 ### URL hash
-In place of a URL, you can give a hash of URLs. The callback, delayed until all files have been received, is passed a new hash with the same keys, with the file data as their respective values, interpreted as above, including [type overrides](#reviver-override).
+
+Calling signature: `getSmart(urls: object, callback: function, modulePrototype: object = Object)`
+
+This overload gets a set of files and waits till they’re all ready. That is, the callback is delayed until all files have been received. It is passed a new hash with the shape (same keys), with the "revived" file data as values.
 
 The following example reads all five files and once the last one is received, it calls the callback with the results:
 ```js
 getSmart({
     myApi: 'my-api.js',
     myStyleEl: 'my-stylesheet.css',
-    myObjec: 'my-data.json',
+    myObject: 'my-data.json',
     mySnippets: 'my-notes.snippets',
     myText: 'my-story.txt'
 }, function(results) {
@@ -71,6 +69,38 @@ getSmart({
 window.onload = getSmart.bind(null, urlOrUrlHash, function(results) {
    // page logic goes here and typically references results
 });
+```
+
+### File revivers
+
+Files are "revived" per their extension:
+
+Extension | File Type | Returned Value
+--------- | :-------: | --------------
+`.js` | JavaScript | Any value as returned by the executed JavaScript code in the file via `exports` or `module.exports` per CommonJS usage
+`.css` | CSS Stylesheet | A `HTMLStyleElement` (`<style>...</style>` element)
+`.json` | JSON | A plain JavaScript object as returned by `JSON.parse`
+`.snippets` | Snippets | An `Array` of strings split by `getSmart.snip`
+`.txt` | Generic | Raw data (any extension or null extension)
+
+#### JavaScript
+Each file is fetched, closed over, and executed. The closure has access to locals `exports`, `module`, and `require`. This `require` is _asynchronous_ and takes a callback. See [note below](#a-note-about-require).
+
+The JavaScript reviver respects the optional third parameter to `getSmart` called `modulePrototype`, an optional object which becomes the prototype for the local `module` object. This gives the module access to selected globals. In any case, `module.exports` is always a defined on the instance. (If not included in the call, `module`’s prototype is `Object`.)
+
+#### Snippets
+Snippets files contain sections of text separated by the string in `getSmart.snip`. The return value is an array of these sections. If the separator does not appear in the file, a single-element array is returned.
+
+#### Overriding which reviver is called
+To override the reviver, append the following to the filename: `;substring.reviver` where:
+* `substring` — Can be any string and is ignored if present (may be of possible use to applications)
+* `.` — Separator (if substring omitted, `.` may also be omitted)
+* `reviver` — The name of a reviver
+
+The following example forces a `.js` file to be read as if it had been a `.snippets` file:
+```js
+var mySnippets; // receives array of string from my-notes.js split by getSmart.snip ("\n// ---snip---\n")
+getSmart('my-notes.js;snippets', function(array) { mySnippets = array; });
 ```
 
 ## File specifications
@@ -97,7 +127,7 @@ Where `myRequireFunction` may be either a single-parameter synchronous function 
 
 > NOTE: In the current implementation, relative URLs are relative to the site root and not (as in CommonJS modules) to the location of the file containing the `require` call.
 
-## Revivers
+## Custom revivers
 Additional file content revivers can be defined by the application developer by adding functions to the `getSmart.revivers` hash. All reviver functions are called with `(data, callback, modulePrototype)`. However, it is up to the function whether or not to call the callback:
 * **Synchronous reviver functions** ignore the callback and simply return the revived object
 * **Asynchronous reviver functions** call the callback with the revived object and return nothing
